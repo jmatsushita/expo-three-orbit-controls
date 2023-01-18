@@ -10,6 +10,8 @@
  * @author ScieCode / http://github.com/sciecode
  */
 
+import { Platform } from 'react-native';
+import { getNode } from 'react-native-web-hooks';
 import {
   EventDispatcher,
   MOUSE,
@@ -21,8 +23,6 @@ import {
   Vector3,
   Camera,
 } from 'three';
-import { Platform } from 'react-native';
-import { getNode } from 'react-native-web-hooks';
 // This set of controls performs orbiting, dollying (zooming), and panning.
 // Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
 //
