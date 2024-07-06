@@ -44,7 +44,13 @@ const EPS = 0.000001;
 
 const useDOM = false;
 
-export class OrbitControls extends EventDispatcher {
+interface OrbitControlEvent {
+  change: { };
+  start: { };
+  end: { };
+}
+
+export class OrbitControls extends EventDispatcher<OrbitControlEvent> {
   // Set to false to disable this control
   enabled: boolean = true;
 
@@ -124,9 +130,9 @@ export class OrbitControls extends EventDispatcher {
   // internals
   //
 
-  private changeEvent = { type: 'change' };
-  private startEvent = { type: 'start' };
-  private endEvent = { type: 'end' };
+  private changeEvent = { type: 'change' as const};
+  private startEvent = { type: 'start' as const};
+  private endEvent = { type: 'end' as const};
 
   private state = STATE.NONE;
 
