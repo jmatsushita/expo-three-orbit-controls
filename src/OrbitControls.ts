@@ -45,9 +45,10 @@ const EPS = 0.000001;
 const useDOM = false;
 
 interface OrbitControlEvent {
-  change: { };
-  start: { };
-  end: { };
+  type: 'change' | 'start' | 'end';
+  // change: {};
+  // start: {};
+  // end: {};
 }
 
 export class OrbitControls extends EventDispatcher<OrbitControlEvent> {
@@ -130,9 +131,9 @@ export class OrbitControls extends EventDispatcher<OrbitControlEvent> {
   // internals
   //
 
-  private changeEvent = { type: 'change' as const};
-  private startEvent = { type: 'start' as const};
-  private endEvent = { type: 'end' as const};
+  private changeEvent = { type: 'change' as const };
+  private startEvent = { type: 'start' as const };
+  private endEvent = { type: 'end' as const };
 
   private state = STATE.NONE;
 
@@ -386,14 +387,14 @@ export class OrbitControls extends EventDispatcher<OrbitControlEvent> {
           // orthographic
           this.panLeft(
             (deltaX * (this.object.right - this.object.left)) /
-              this.object.zoom /
-              this.getElementWidth(),
+            this.object.zoom /
+            this.getElementWidth(),
             this.object.matrix
           );
           this.panUp(
             (deltaY * (this.object.top - this.object.bottom)) /
-              this.object.zoom /
-              this.getElementHeight(),
+            this.object.zoom /
+            this.getElementHeight(),
             this.object.matrix
           );
         } else {

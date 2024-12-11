@@ -67,16 +67,16 @@ const OrbitControlsView = React.forwardRef(
         onMoveShouldSetPanResponder: (evt, gestureState) => true,
         onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
-        onPanResponderGrant({ nativeEvent }) {
+        onPanResponderGrant(nativeEvent) {
           return controls?.onTouchStart(nativeEvent);
         },
-        onPanResponderMove({ nativeEvent }) {
+        onPanResponderMove(nativeEvent) {
           return controls?.onTouchMove(nativeEvent);
         },
-        onPanResponderRelease({ nativeEvent }) {
+        onPanResponderRelease(nativeEvent) {
           return onTouchEnded(nativeEvent);
         },
-        onPanResponderTerminate({ nativeEvent }) {
+        onPanResponderTerminate(nativeEvent) {
           return onTouchEnded(nativeEvent);
         },
       });
