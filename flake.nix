@@ -1,5 +1,5 @@
 {
-  description = "iios";
+  description = "expo-three-orbit-controls";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -7,12 +7,11 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-    easy-purescript-nix.url = "github:justinwoo/easy-purescript-nix";
   };
 
-  outputs = { self, nixpkgs, easy-purescript-nix, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
     let
-      name = "iios";
+      name = "expo-three-orbit-controls";
 
       supportedSystems = [
         "aarch64-darwin"
@@ -28,18 +27,14 @@
           pkgs = import nixpkgs {
             inherit system;
           };
-          easy-ps = import easy-purescript-nix { inherit pkgs; };
         in
         pkgs.mkShell {
           inherit name;
           buildInputs = (with pkgs; [
-            # nodejs-16_x
-            # Not really using the nodejs-mobile-react-native so far.
             nodejs
             nixpkgs-fmt
             esbuild
-          ])
-          );
+          ]);
 
         });
     };
