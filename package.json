@@ -34,7 +34,7 @@
     "url": "git@github.com:EvanBacon/expo-three-orbit-controls.git"
   },
   "devDependencies": {
-    "@types/three": "^0.148.0",
+    "@types/three": "^0.166.0",
     "eslint": "^8.32.0",
     "expo": "^52.0.0",
     "expo-gl": "^15.0.2",

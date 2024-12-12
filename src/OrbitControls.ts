@@ -22,6 +22,7 @@ import {
   Vector2,
   Vector3,
   Camera,
+  BaseEvent,
 } from 'three';
 // This set of controls performs orbiting, dollying (zooming), and panning.
 // Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
@@ -44,14 +45,17 @@ const EPS = 0.000001;
 
 const useDOM = false;
 
-interface OrbitControlEvent {
-  type: 'change' | 'start' | 'end';
-  // change: {};
-  // start: {};
-  // end: {};
+// First, define the specific event types
+type OrbitControlEventType = 'change' | 'start' | 'end';
+
+// Then define your event map that extends from BaseEvent
+interface OrbitControlEventMap {
+  change: BaseEvent<'change'>;
+  start: BaseEvent<'start'>;
+  end: BaseEvent<'end'>;
 }
 
-export class OrbitControls extends EventDispatcher<OrbitControlEvent> {
+export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
   // Set to false to disable this control
   enabled: boolean = true;
 
@@ -131,9 +135,9 @@ export class OrbitControls extends EventDispatcher<OrbitControlEvent> {
   // internals
   //
 
-  private changeEvent = { type: 'change' as const };
-  private startEvent = { type: 'start' as const };
-  private endEvent = { type: 'end' as const };
+  private changeEvent: OrbitControlEventMap['change'] = { type: 'change' };
+  private startEvent: OrbitControlEventMap['start'] = { type: 'start' };
+  private endEvent: OrbitControlEventMap['end'] = { type: 'end' };
 
   private state = STATE.NONE;
 
