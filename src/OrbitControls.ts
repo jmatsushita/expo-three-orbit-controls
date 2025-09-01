@@ -10,7 +10,7 @@
  * @author ScieCode / http://github.com/sciecode
  */
 
-import { Platform } from 'react-native';
+import { NativeTouchEvent, Platform } from 'react-native';
 import { getNode } from 'react-native-web-hooks';
 import {
   EventDispatcher,
@@ -46,7 +46,7 @@ const EPS = 0.000001;
 const useDOM = false;
 
 // First, define the specific event types
-type OrbitControlEventType = 'change' | 'start' | 'end';
+// type OrbitControlEventType = 'change' | 'start' | 'end';
 
 // Then define your event map that extends from BaseEvent
 interface OrbitControlEventMap {
@@ -364,10 +364,10 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
       const offset = new Vector3();
 
       return (deltaX: number, deltaY: number) => {
-        const element =
-          this.domElement === window.document
-            ? this.domElement.body
-            : this.domElement;
+        // const element =
+        //   this.domElement === window.document
+        //     ? this.domElement.body
+        //     : this.domElement;
 
         if (this.object.isPerspectiveCamera) {
           // perspective
@@ -545,19 +545,19 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     return this.height;
   };
 
-  private handleMouseDownRotate = ({ clientX, clientY }) => {
+  private handleMouseDownRotate = ({ clientX, clientY }: MouseEvent) => {
     this.rotateStart.set(clientX, clientY);
   };
 
-  private handleMouseDownDolly = ({ clientX, clientY }) => {
+  private handleMouseDownDolly = ({ clientX, clientY }: MouseEvent) => {
     this.dollyStart.set(clientX, clientY);
   };
 
-  private handleMouseDownPan = ({ clientX, clientY }) => {
+  private handleMouseDownPan = ({ clientX, clientY }: MouseEvent) => {
     this.panStart.set(clientX, clientY);
   };
 
-  private handleMouseMoveRotate = ({ clientX, clientY }) => {
+  private handleMouseMoveRotate = ({ clientX, clientY }: MouseEvent) => {
     this.rotateEnd.set(clientX, clientY);
 
     this.rotateDelta
@@ -578,7 +578,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.update();
   };
 
-  private handleMouseMoveDolly = ({ clientX, clientY }) => {
+  private handleMouseMoveDolly = ({ clientX, clientY }: MouseEvent) => {
     this.dollyEnd.set(clientX, clientY);
 
     this.dollyDelta.subVectors(this.dollyEnd, this.dollyStart);
@@ -594,7 +594,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.update();
   };
 
-  private handleMouseMovePan = ({ clientX, clientY }) => {
+  private handleMouseMovePan = ({ clientX, clientY }: MouseEvent) => {
     this.panEnd.set(clientX, clientY);
 
     this.panDelta
@@ -612,7 +612,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     // no-op
   }
 
-  private handleMouseWheel = ({ deltaY }) => {
+  private handleMouseWheel = ({ deltaY }: WheelEvent) => {
     if (deltaY < 0) {
       this.dollyOut(this.getZoomScale());
     } else if (deltaY > 0) {
@@ -622,7 +622,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.update();
   };
 
-  private handleKeyDown = event => {
+  private handleKeyDown = (event: KeyboardEvent) => {
     let needsUpdate = false;
 
     switch (event.keyCode) {
@@ -655,7 +655,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     }
   };
 
-  private handleTouchStartRotate = ({ touches }) => {
+  private handleTouchStartRotate = ({ touches }: NativeTouchEvent) => {
     if (touches.length == 1) {
       this.rotateStart.set(touches[0].pageX, touches[0].pageY);
     } else {
@@ -666,7 +666,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     }
   };
 
-  private handleTouchStartPan = ({ touches }) => {
+  private handleTouchStartPan = ({ touches }: NativeTouchEvent) => {
     if (touches.length === 1) {
       this.panStart.set(touches[0].pageX, touches[0].pageY);
     } else {
@@ -677,7 +677,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     }
   };
 
-  private handleTouchStartDolly = ({ touches }) => {
+  private handleTouchStartDolly = ({ touches }: NativeTouchEvent) => {
     const dx = touches[0].pageX - touches[1].pageX;
     const dy = touches[0].pageY - touches[1].pageY;
 
@@ -686,19 +686,19 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.dollyStart.set(0, distance);
   };
 
-  private handleTouchStartDollyPan = event => {
+  private handleTouchStartDollyPan = (event: NativeTouchEvent) => {
     if (this.enableZoom) this.handleTouchStartDolly(event);
 
     if (this.enablePan) this.handleTouchStartPan(event);
   };
 
-  private handleTouchStartDollyRotate = event => {
+  private handleTouchStartDollyRotate = (event: NativeTouchEvent) => {
     if (this.enableZoom) this.handleTouchStartDolly(event);
 
     if (this.enableRotate) this.handleTouchStartRotate(event);
   };
 
-  private handleTouchMoveRotate = ({ touches }) => {
+  private handleTouchMoveRotate = ({ touches }: NativeTouchEvent) => {
     if (touches.length === 1) {
       this.rotateEnd.set(touches[0].pageX, touches[0].pageY);
     } else {
@@ -721,7 +721,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.rotateStart.copy(this.rotateEnd);
   };
 
-  private handleTouchMovePan = ({ touches }) => {
+  private handleTouchMovePan = ({ touches }: NativeTouchEvent) => {
     if (touches.length == 1) {
       this.panEnd.set(touches[0].pageX, touches[0].pageY);
     } else {
@@ -740,14 +740,11 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.panStart.copy(this.panEnd);
   };
 
-  private handleTouchMoveDolly = ({ touches }) => {
-    if (!Array.isArray(touches)) touches = [];
-    if (!touches[0]) touches[0] = { pageX: 0, pageY: 0 };
-    if (!touches[1])
-      touches[1] = {
-        pageX: touches[0].pageX || 0,
-        pageY: touches[0].pageY || 0,
-      };
+  private handleTouchMoveDolly = ({ touches }: NativeTouchEvent) => {
+    // Check if touches is an array-like object and has at least two touches
+    if (!touches || touches.length < 2) {
+      return;
+    }
     const dx = touches[0].pageX - touches[1].pageX;
     const dy = touches[0].pageY - touches[1].pageY;
 
@@ -765,13 +762,13 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.dollyStart.copy(this.dollyEnd);
   };
 
-  private handleTouchMoveDollyPan = event => {
+  private handleTouchMoveDollyPan = (event: NativeTouchEvent) => {
     if (this.enableZoom) this.handleTouchMoveDolly(event);
 
     if (this.enablePan) this.handleTouchMovePan(event);
   };
 
-  private handleTouchMoveDollyRotate = event => {
+  private handleTouchMoveDollyRotate = (event: NativeTouchEvent) => {
     if (this.enableZoom) this.handleTouchMoveDolly(event);
 
     if (this.enableRotate) this.handleTouchMoveRotate(event);
@@ -785,7 +782,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
   // event handlers - FSM: listen for events and reset state
   //
 
-  private onMouseDown = event => {
+  private onMouseDown = (event: MouseEvent) => {
     if (this.enabled === false) return;
 
     // Prevent the browser from scrolling.
@@ -894,7 +891,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     }
   };
 
-  private onMouseMove = event => {
+  private onMouseMove = (event: MouseEvent) => {
     if (this.enabled === false) return;
 
     event.preventDefault?.();
@@ -923,7 +920,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     }
   };
 
-  private onMouseUp = event => {
+  private onMouseUp = (event: MouseEvent) => {
     if (this.enabled === false) return;
 
     this.handleMouseUp(/* event */);
@@ -938,7 +935,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.state = STATE.NONE;
   };
 
-  onMouseWheel = event => {
+  onMouseWheel = (event: WheelEvent) => {
     if (
       this.enabled === false ||
       this.enableZoom === false ||
@@ -956,7 +953,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.dispatchEvent(this.endEvent);
   };
 
-  onKeyDown = event => {
+  onKeyDown = (event: KeyboardEvent) => {
     if (
       this.enabled === false ||
       this.enableKeys === false ||
@@ -967,9 +964,10 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.handleKeyDown(event);
   };
 
-  onTouchStart = event => {
+  onTouchStart = (event: NativeTouchEvent) => {
     if (this.enabled === false) return;
 
+    // @ts-ignore
     event.preventDefault?.();
 
     switch (event.touches.length) {
@@ -1035,10 +1033,12 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     }
   };
 
-  onTouchMove = event => {
+  onTouchMove = (event: NativeTouchEvent) => {
     if (this.enabled === false) return;
 
+    // @ts-ignore
     event.preventDefault?.();
+    // @ts-ignore
     event.stopPropagation?.();
 
     switch (this.state) {
@@ -1083,7 +1083,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     }
   };
 
-  onTouchEnd = event => {
+  onTouchEnd = (event: NativeTouchEvent) => {
     if (this.enabled === false) return;
 
     this.handleTouchEnd(/* event */);
@@ -1093,7 +1093,7 @@ export class OrbitControls extends EventDispatcher<OrbitControlEventMap> {
     this.state = STATE.NONE;
   };
 
-  onContextMenu = event => {
+  onContextMenu = (event: Event) => {
     if (this.enabled === false) return;
 
     event.preventDefault?.();

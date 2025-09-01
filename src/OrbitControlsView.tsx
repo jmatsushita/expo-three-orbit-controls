@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { View, Platform, ViewProps, PanResponder } from 'react-native';
+import { View, Platform, ViewProps, PanResponder, NativeTouchEvent } from 'react-native';
 import { Camera } from 'three';
 
 import { OrbitControls } from './OrbitControls';
 
 export type OrbitControlsViewProps = { camera: null | Camera } & ViewProps;
 
-function polyfillEventTouches(nativeEvent) {
+function polyfillEventTouches(nativeEvent: NativeTouchEvent): NativeTouchEvent {
   if (Platform.OS === 'web') return nativeEvent;
   if (!Array.isArray(nativeEvent.touches)) nativeEvent.touches = [];
 
@@ -16,7 +16,7 @@ function polyfillEventTouches(nativeEvent) {
     }
   }
 
-  return nativeEvent;
+  return nativeEvent as NativeTouchEvent;
 }
 
 const OrbitControlsView = React.forwardRef(
@@ -46,13 +46,13 @@ const OrbitControlsView = React.forwardRef(
     );
 
     const responder = React.useMemo(() => {
-      function onTouchEnded(nativeEvent) {
+      function onTouchEnded(nativeEvent: NativeTouchEvent) {
         const polyfill = polyfillEventTouches(nativeEvent);
 
         // If only one touch then we may be encountering the bug where pan responder returns a two finger touch-end event in two different calls. :/
         // RNGH doesn't have this issue.
         const isMisfiredNativeGesture =
-          Platform.OS !== 'web' && nativeEvent.identifier > 1;
+          Platform.OS !== 'web' && Number.parseInt(nativeEvent.identifier) > 1;
 
         if (isMisfiredNativeGesture) {
           return;
@@ -67,16 +67,16 @@ const OrbitControlsView = React.forwardRef(
         onMoveShouldSetPanResponder: (evt, gestureState) => true,
         onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
-        onPanResponderGrant(nativeEvent) {
+        onPanResponderGrant({ nativeEvent }) {
           return controls?.onTouchStart(nativeEvent);
         },
-        onPanResponderMove(nativeEvent) {
+        onPanResponderMove({ nativeEvent }) {
           return controls?.onTouchMove(nativeEvent);
         },
-        onPanResponderRelease(nativeEvent) {
+        onPanResponderRelease({ nativeEvent }) {
           return onTouchEnded(nativeEvent);
         },
-        onPanResponderTerminate(nativeEvent) {
+        onPanResponderTerminate({ nativeEvent }) {
           return onTouchEnded(nativeEvent);
         },
       });
